@@ -1,7 +1,5 @@
 # lu
-[![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu)
-
-[![Coverage Status](https://coveralls.io/repos/github/vincentLiuxiang/lu/badge.svg?branch=master)](https://coveralls.io/github/vincentLiuxiang/lu?branch=master)
+[![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu) [![Coverage Status](https://coveralls.io/repos/github/vincentLiuxiang/lu/badge.svg)](https://coveralls.io/github/vincentLiuxiang/lu)
 
       ___
 	 |  /      ..    )))   
