@@ -1,0 +1,3 @@
+context.go
+*.log
+coverage.out
