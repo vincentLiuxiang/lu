@@ -93,17 +93,17 @@ when a http request comes, lu will compare ctx.Path() with []byte(router), The c
 
 * if the router is "/"，it means this router matches any http request
 
-incoming http requests will execute each middleware one-by-one until a middleware does not call next() within it.
+http request will execute each middleware one-by-one until a middleware does not call next() within it.
 
 ```go
-	app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-		// ctx.Path() is starts with []byte("/foo"),
-		// if len(ctx.Path()) > len("/foo") , ctx.Path()[len("/foo")] must be '/' or '?'
+	app.Use("/hello",func(ctx *fasthttp.RequestCtx, next func(error)){
+		// ctx.Path() is starts with []byte("/hello"),
+		// if len(ctx.Path()) > len("/hello") , ctx.Path()[len("/hello")] must be '/' or '?'
 		next(nil)
 	})
-	app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
-		// ctx.Path() is starts with []byte("/bar"),
-		// if len(ctx.Path()) > len("/bar") , ctx.Path()[len("/bar")] must be '/' or '?'
+	app.Use("/world",func(ctx *fasthttp.RequestCtx, next func(error)){
+		// ctx.Path() is starts with []byte("/world"),
+		// if len(ctx.Path()) > len("/world") , ctx.Path()[len("/world")] must be '/' or '?'
 		next(nil)
 	})
 ```
