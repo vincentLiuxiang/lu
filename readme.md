@@ -68,7 +68,7 @@ something error occour
 
 ## custom your server
 
-```
+```go
 	app := lu.New()
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		ctx.SetBody([]byte("helloworld"))
