@@ -496,11 +496,11 @@ func Test_MiddleWareResponese1(t *testing.T) {
 
 	})
 
-	go app.Listen(":8080")
+	go app.Listen(":3000")
 
 	// Non router match,
 	// lu will response 404 Not Found
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8080/test1")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3000/test1")
 	if code == 404 && string(body) == "Not Found" {
 		t.Log("OK")
 	} else {
@@ -509,7 +509,7 @@ func Test_MiddleWareResponese1(t *testing.T) {
 
 	// Middleware /test match , but no response
 	// The 200 code is set by fasthttp default
-	code, body, _ = fasthttp.Get(nil, "http://localhost:8080/test")
+	code, body, _ = fasthttp.Get(nil, "http://localhost:3000/test")
 	if code == 200 && string(body) == "" {
 		t.Log("OK")
 	} else {
@@ -529,9 +529,9 @@ func Test_MiddleWareResponese2(t *testing.T) {
 		// next(nil)
 	})
 
-	go app.Listen(":8081")
+	go app.Listen(":3010")
 
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8081/test")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3010/test")
 	if code == 404 && string(body) == "Not Found" {
 		t.Log("OK")
 	} else {
@@ -556,9 +556,9 @@ func Test_MiddleWareResponese3(t *testing.T) {
 		ctx.SetBody([]byte("hello"))
 	})
 
-	go app.Listen(":8085")
+	go app.Listen(":3001")
 
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8085/test/hello")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3001/test/hello")
 
 	if code == 302 && string(body) == "hello" {
 		t.Log("OK")
@@ -579,9 +579,9 @@ func Test_ErrorMiddleWareResponese1(t *testing.T) {
 
 	})
 
-	go app.Listen(":8082")
+	go app.Listen(":3002")
 
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8082/test")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3002/test")
 	if code == 200 && string(body) == "" {
 		t.Log("OK")
 	} else {
@@ -602,9 +602,9 @@ func Test_ErrorMiddleWareResponese2(t *testing.T) {
 		next(errors.New("error"))
 	})
 
-	go app.Listen(":8083")
+	go app.Listen(":3003")
 
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8083/test")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3003/test")
 	if code == 404 && string(body) == "Not Found" {
 		t.Log("OK")
 	} else {
@@ -625,9 +625,9 @@ func Test_ErrorMiddleWareResponese3(t *testing.T) {
 		ctx.SetBody([]byte("world"))
 	})
 
-	go app.Listen(":8086")
+	go app.Listen(":3004")
 
-	code, body, _ := fasthttp.Get(nil, "http://localhost:8086/test")
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3004/test")
 	if code == 302 && string(body) == "world" {
 		t.Log("OK")
 	} else {
