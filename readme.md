@@ -1,4 +1,6 @@
 # lu
+[![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu)
+
       ___
 	 |  /      ..    )))   
 	 | |     .    . (((
