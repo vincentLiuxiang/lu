@@ -5,14 +5,7 @@ go:
   - 1.7
 
 script:
-  # build test for supported platforms
-  - GOOS=linux go build
-  - GOOS=darwin go build
-  - GOOS=freebsd go build
-  - GOOS=windows go build
-  - GOARCH=386 go build
 
-  # run tests on a standard platform
+  # run tests 
   - go get github.com/mattn/goveralls
   - $HOME/gopath/bin/goveralls -service=travis-ci
-  # go test -coverprofile=cover.out ./...
