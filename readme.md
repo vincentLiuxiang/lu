@@ -66,6 +66,22 @@ http://localhost:8080/api
 something error occour
 ```
 
+## custom your server
+
+```
+	app := lu.New()
+	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
+		ctx.SetBody([]byte("helloworld"))
+	})
+	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
+		ctx.SetBody([]byte("my name is go"))
+	})
+	server := &fasthttp.Server{
+		Handler:     app.Handler,
+		Concurrency: 1024 * 1024,
+	}
+	server.ListenAndServe(":8080")
+```
 ## Use middleware
 The first parameter of ```app.Use``` we call it **router**, and the second parameter we call it **middleware**, all the middlewares will be pushed to a ```stack``` inner lu.
 
@@ -212,6 +228,7 @@ Not Found
 
 ## api
 
+* app.Handler fasthttp.RequestHandler
 * app.Use(router string, func(ctx *fasthttp.RequestCtx, next func(error))) register non-error-middleware
 
 * app.Use(router string, func(err error, ctx *fasthttp.RequestCtx, next func(error))) register error-middleware
