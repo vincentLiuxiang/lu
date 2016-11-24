@@ -138,7 +138,7 @@ The  second parameter of ```app.Use``` method, can be to two different type
 In **lu**, there are two stack arrays to store the midllewares which are accepted by app.Use. One is used to store non-error-middleware and the other one  is used to store error-middleware
 
 
-No matter in which type of middleware, when it calls next(nil), next non-error-middleware will be excute if router match. But, when calls next(errors.New('some error')) , the program will skip all the non-error-middleware and directly excute the left first error-middleware if router match.
+No matter in which type of middleware, when it calls next(nil), next non-error-middleware will be excute if router match. But, when calls next(errors.New('some error')) , the program will skip all the non-error-middleware and directly execute the left first error-middleware if router match.
 
 * for example
 
@@ -200,7 +200,7 @@ http://xxxx:xxx/foo
 
 
 ```
-* In the last middleware, no matter what type of the middleware, **do not call** ```next```, or, lu will response a a 404 statusCode and a "Not Found" string body. Because, there is no middleware after the last middleware.
+* In the last middleware, no matter what type of the middleware, **do not call** ```next```, or, lu will response a 404 statusCode and a "Not Found" string body. Because, there is no middleware after the last middleware.
 
 ```go
     app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
