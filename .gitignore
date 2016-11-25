@@ -1,3 +1,4 @@
 context.go
 *.log
 coverage.out
+example
