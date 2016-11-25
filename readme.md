@@ -8,7 +8,10 @@
 	 | |___ .    | \__/ |   
 	 \_____/      \____/      version: 0.0.1
 	 
- **A high performance and Light-weighted go middleware web framework which is based on fasthttp**
+ **A high performance and Light-weighted go middleware web framework which is based on [fasthttp](https://github.com/valyala/fasthttp)**
+ 
+ The MIT License
+ 
 ## install
 
 ```
