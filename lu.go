@@ -94,8 +94,8 @@ func (lu *Lu) Head(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("HEAD"), handler)
 }
 
-func (lu *Lu) Listen(port string) {
-	fasthttp.ListenAndServe(port, lu.Handler)
+func (lu *Lu) Listen(port string) error {
+	return fasthttp.ListenAndServe(port, lu.Handler)
 }
 
 func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
