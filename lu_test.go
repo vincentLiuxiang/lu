@@ -135,6 +135,15 @@ func Test_Use(t *testing.T) {
 
 }
 
+func Test_Listen(t *testing.T) {
+	app := New()
+	if err := app.Listen("error_port"); err != nil {
+		t.Log("OK")
+	} else {
+		t.Error("OK")
+	}
+}
+
 func Test_HttpMethod(t *testing.T) {
 	var (
 		Get, Post, Head, Delete, Put, Patch, Options bool
