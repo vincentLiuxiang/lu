@@ -628,7 +628,7 @@ func Test_ErrorMiddleWareResponese3(t *testing.T) {
 	app.Use("/test", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		next(errors.New("error"))
 	})
-	// No response
+
 	app.Use("/", func(err error, ctx *fasthttp.RequestCtx, next func(error)) {
 		ctx.SetStatusCode(302)
 		ctx.SetBody([]byte("world"))
@@ -638,6 +638,33 @@ func Test_ErrorMiddleWareResponese3(t *testing.T) {
 
 	code, body, _ := fasthttp.Get(nil, "http://localhost:3004/test")
 	if code == 302 && string(body) == "world" {
+		t.Log("OK")
+	} else {
+		t.Error("ERROR")
+	}
+}
+
+func Test_Finally(t *testing.T) {
+	app := New()
+	// No response
+	app.Use("/test", func(ctx *fasthttp.RequestCtx, next func(error)) {
+		next(errors.New("error"))
+	})
+
+	app.Use("/", func(err error, ctx *fasthttp.RequestCtx, next func(error)) {
+		ctx.SetStatusCode(302)
+		ctx.SetBody([]byte("world"))
+		next(errors.New("finally handle"))
+	})
+
+	app.Finally = func(err error, ctx *fasthttp.RequestCtx) {
+		ctx.SetStatusCode(500)
+		ctx.SetBody([]byte(err.Error()))
+	}
+	go app.Listen(":3005")
+
+	code, body, _ := fasthttp.Get(nil, "http://localhost:3005/test")
+	if code == 500 && string(body) == "finally handle" {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
