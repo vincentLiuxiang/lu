@@ -15,7 +15,8 @@ type (
 		middleWare handleFunc
 		errorsWare errorsFunc
 	}
-	stack []midware
+	stack         []midware
+	finalResponse func(err error, ctx *fasthttp.RequestCtx)
 )
 
 func (stack *stack) push(m midware) {
@@ -23,14 +24,46 @@ func (stack *stack) push(m midware) {
 }
 
 type Lu struct {
-	stack    stack
+	// non-error-middleware stack
+	// store middleware when call app.Use()/Get/Post etc.
+	stack stack
+
+	// error-middleware stack
+	// store error-middleware when call app.Use()/Get/Post etc.
 	errStack stack
+
+	// when the last error-middleware or non-error-middleware
+	// calls  next(nil) or next(error), there is no more middleware.
+	// In this case (see func finalRes()):
+	// 1) if Finally == nil, lu will do below:
+	//	  * ctx.ResetBody()
+	//	  * ctx.SetStatusCode(fasthttp.StatusNotFound)
+	//	  * ctx.SetBodyString("Not Found")
+	// 2) if Finally is rewrote, how to response to clients by your code.
+	Finally finalResponse
 }
 
 func New() *Lu {
 	return &Lu{}
 }
 
+// Register a middleware
+// The first parameter of app.Use we call it router,
+// and the second parameter we call it middleware,
+// all the middlewares will be pushed to stacks inner lu.
+//
+// In lu, there are two stack arrays to store the midllewares which are accepted
+// by app.Use. One is used to store non-error-middleware
+// and the other one is used to store error-middleware
+//
+// func(ctx *fasthttp.RequestCtx, next func(error)),
+// we call it non-error-middleware
+//
+// http request will execute each middleware one-by-one until a middleware
+// does not call next(nil) within it.
+//
+// func(err error, ctx *fasthttp.RequestCtx, next func(error)), we call it
+// error-middleware, only execute by call next(error) within a middleware
 func (lu *Lu) Use(route string, handler interface{}) {
 	if route == "" || route[0] != '/' {
 		panic("The first params of Use func must be a string which start with '/'")
@@ -66,30 +99,37 @@ func (lu *Lu) Use(route string, handler interface{}) {
 	}
 }
 
+// register a middleware only handle POST method
 func (lu *Lu) Post(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("POST"), handler)
 }
 
+// register a middleware only handle PUT method
 func (lu *Lu) Put(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("PUT"), handler)
 }
 
+// register a middleware only handle GET method
 func (lu *Lu) Get(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("GET"), handler)
 }
 
+// register a middleware only handle DELETE method
 func (lu *Lu) Delete(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("DELETE"), handler)
 }
 
+// register a middleware only handle OPTIONS method
 func (lu *Lu) Options(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("OPTIONS"), handler)
 }
 
+// register a middleware only handle PATCH method
 func (lu *Lu) Patch(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("PATCH"), handler)
 }
 
+// register a middleware only handle HEAD method
 func (lu *Lu) Head(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("HEAD"), handler)
 }
@@ -98,6 +138,12 @@ func (lu *Lu) Listen(port string) error {
 	return fasthttp.ListenAndServe(port, lu.Handler)
 }
 
+// When a http request comes, lu will compare ctx.Path() with []byte(router),
+// The compare rules are below: (see handle())
+//	* if ctx.Path() equals to []byte(router) , it matches.
+//	* if ctx.Path() starts with []byte(router), and len(ctx.Path()) > len(router),
+//	  and ctx.Path()[len(router)] is '/' or '?', it matches.
+//	* if the router is "/"，it means this router matches any http request
 func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
 	var (
 		index    = 0
@@ -110,7 +156,7 @@ func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
 
 		if err != nil {
 			if errIndex >= len(lu.errStack) {
-				nonMiddlwareResponese(ctx)
+				lu.finalRes(err, ctx)
 				return
 			}
 			m = lu.errStack[errIndex]
@@ -118,7 +164,7 @@ func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
 			index = m.index
 		} else {
 			if index >= len(lu.stack) {
-				nonMiddlwareResponese(ctx)
+				lu.finalRes(nil, ctx)
 				return
 			}
 			m = lu.stack[index]
@@ -132,12 +178,20 @@ func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
 	nxt(err)
 }
 
-func nonMiddlwareResponese(ctx *fasthttp.RequestCtx) {
+// The finalResponse to clients
+// see Finally
+func (lu *Lu) finalRes(err error, ctx *fasthttp.RequestCtx) {
+	if lu.Finally != nil {
+		lu.Finally(err, ctx)
+		return
+	}
 	ctx.ResetBody()
 	ctx.SetStatusCode(fasthttp.StatusNotFound)
 	ctx.SetBodyString("Not Found")
 }
 
+// Call lu.Use(),
+// only handle the given method
 func (lu *Lu) httpMethod(route string, method []byte, handler handleFunc) {
 	lu.Use(route, func(ctx *fasthttp.RequestCtx, next func(error)) {
 		if sliceCompare(ctx.Method(), method) {
@@ -173,6 +227,7 @@ func sliceDiff(src, dest []byte) bool {
 	return true
 }
 
+// see Handler()
 func handle(err error, ctx *fasthttp.RequestCtx, m midware, n func(error)) {
 	url := ctx.Path()
 	urlLen := len(url)
