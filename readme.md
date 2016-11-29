@@ -203,7 +203,7 @@ http://xxxx:xxx/foo
 
 
 ```
-* In the last middleware, no matter what type of the middleware, **do not call** ```next```, or, lu will response a 404 statusCode and a "Not Found" string body. Because, there is no middleware after the last middleware.
+* In the last middleware, no matter what type of the middleware,  if you call ```next```, lu will response a 404 statusCode and a "Not Found" string body. Because, there is no middleware after the last middleware.
 
 ```go
     app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
@@ -228,11 +228,45 @@ http://xxxx:xxx/bar
 404
 Not Found
 ```
+* ```app. Finally```.  However, if you call ```next(nil)``` or ```next(error)``` in the last middleware. lu providers a Finally function, allow user to custom the response
+
+```
+	app := New()
+	app.Use("/test", func(ctx *fasthttp.RequestCtx, next func(error)) {
+		next(errors.New("error"))
+	})
+	app.Use("/", func(err error, ctx *fasthttp.RequestCtx, next func(error)) {
+		ctx.SetStatusCode(302)
+		ctx.SetBody([]byte("hello world"))
+		next(errors.New("finally handle"))
+	})
+	app.Finally = func(err error, ctx *fasthttp.RequestCtx) {
+		if err != nil {
+			ctx.SetStatusCode(500)
+			ctx.SetBody([]byte(err.Error()))
+			return
+		}
+		ctx.SetStatusCode(200)
+		ctx.SetBody([]byte("hello world"))
+	}
+	go app.Listen(":3005")
+```
+lu will SetStatusCode(500) , ctx.SetBody([]byte(err.Error()))
+
+```
+http://xxxx:xxx/test
+
+500
+finally handle
+```
 
 ## api
 
+* app.Finally func(err error, ctx *fasthttp.RequestCtx)
+
 * app.Handler fasthttp.RequestHandler
-* app.Use(router string, func(ctx *fasthttp.RequestCtx, next func(error))) register non-error-middleware
+
+* app.Use(router string, func(ctx *fasthttp.RequestCtx, next func(error)) register non-error-middleware
 
 * app.Use(router string, func(err error, ctx *fasthttp.RequestCtx, next func(error))) register error-middleware
 
