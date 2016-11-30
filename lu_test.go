@@ -283,64 +283,49 @@ func Test_Router(t *testing.T) {
 
 	// non-router
 	allTest = false
-	test1 = false
-	test2 = false
-	test3 = false
 	rw.rbuf.WriteString("GET /test HTTP/1.1\r\n\r\n")
 	s.ServeConn(rw)
-	if allTest && !test1 && !test2 && !test3 {
+	if allTest {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
 	}
 
 	// /test1
-	allTest = false
 	test1 = false
-	test2 = false
-	test3 = false
 	rw.rbuf.WriteString("GET /test1 HTTP/1.1\r\n\r\n")
 	s.ServeConn(rw)
-	if allTest && test1 && !test2 && !test3 {
+	if test1 {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
 	}
 
 	// /test1
-	allTest = false
 	test1 = false
-	test2 = false
-	test3 = false
 	rw.rbuf.WriteString("GET /test1/hello HTTP/1.1\r\n\r\n")
 	s.ServeConn(rw)
-	if allTest && test1 && !test2 && !test3 {
+	if test1 {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
 	}
 
 	// /test2
-	allTest = false
-	test1 = false
 	test2 = false
-	test3 = false
 	rw.rbuf.WriteString("GET /test2/hello/world HTTP/1.1\r\n\r\n")
 	s.ServeConn(rw)
-	if allTest && !test1 && test2 && !test3 {
+	if test2 {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
 	}
 
 	// /test3
-	allTest = false
-	test1 = false
-	test2 = false
 	test3 = false
 	rw.rbuf.WriteString("GET /test3?user=123 HTTP/1.1\r\n\r\n")
 	s.ServeConn(rw)
-	if !test1 && !test2 && test3 {
+	if test3 {
 		t.Log("OK")
 	} else {
 		t.Error("ERROR")
@@ -422,13 +407,13 @@ func Test_MiddleWareOrder1(t *testing.T) {
 
 func Test_MiddleWareOrder2(t *testing.T) {
 	app := New()
-	var middleWare int = 0
+	var middleWare int
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		next(errors.New("error"))
 	})
 	// skip this middleware
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		middleWare += 1
+		middleWare++
 		next(nil)
 	})
 
