@@ -23,6 +23,7 @@ func (stack *stack) push(m midware) {
 	*stack = append(*stack, m)
 }
 
+// Lu is a light-weight web middleware framework
 type Lu struct {
 	// non-error-middleware stack
 	// store middleware when call app.Use()/Get/Post etc.
@@ -43,11 +44,12 @@ type Lu struct {
 	Finally finalResponse
 }
 
+// New a Lu instance
 func New() *Lu {
 	return &Lu{}
 }
 
-// Register a middleware
+// Use is use to Register a middleware
 // The first parameter of app.Use we call it router,
 // and the second parameter we call it middleware,
 // all the middlewares will be pushed to stacks inner lu.
@@ -99,46 +101,47 @@ func (lu *Lu) Use(route string, handler interface{}) {
 	}
 }
 
-// register a middleware only handle POST method
+// Post register a middleware only handle POST method
 func (lu *Lu) Post(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("POST"), handler)
 }
 
-// register a middleware only handle PUT method
+// Put register a middleware only handle PUT method
 func (lu *Lu) Put(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("PUT"), handler)
 }
 
-// register a middleware only handle GET method
+// Get register a middleware only handle GET method
 func (lu *Lu) Get(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("GET"), handler)
 }
 
-// register a middleware only handle DELETE method
+// Delete register a middleware only handle DELETE method
 func (lu *Lu) Delete(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("DELETE"), handler)
 }
 
-// register a middleware only handle OPTIONS method
+// Options register a middleware only handle OPTIONS method
 func (lu *Lu) Options(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("OPTIONS"), handler)
 }
 
-// register a middleware only handle PATCH method
+// Patch register a middleware only handle PATCH method
 func (lu *Lu) Patch(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("PATCH"), handler)
 }
 
-// register a middleware only handle HEAD method
+// Head register a middleware only handle HEAD method
 func (lu *Lu) Head(route string, handler handleFunc) {
 	lu.httpMethod(route, []byte("HEAD"), handler)
 }
 
+// Listen is used to listen a port
 func (lu *Lu) Listen(port string) error {
 	return fasthttp.ListenAndServe(port, lu.Handler)
 }
 
-// When a http request comes, lu will compare ctx.Path() with []byte(router),
+// Handler an incoming http request , lu will compare ctx.Path() with []byte(router),
 // The compare rules are below: (see handle())
 //	* if ctx.Path() equals to []byte(router) , it matches.
 //	* if ctx.Path() starts with []byte(router), and len(ctx.Path()) > len(router),
@@ -149,7 +152,7 @@ func (lu *Lu) Handler(ctx *fasthttp.RequestCtx) {
 		index    = 0
 		errIndex = 0
 		nxt      func(error)
-		err      error = nil
+		err      error
 	)
 	nxt = func(err error) {
 		var m midware
