@@ -442,14 +442,14 @@ func Test_MiddleWareOrder2(t *testing.T) {
 
 func Test_MiddleWareOrder3(t *testing.T) {
 	app := New()
-	var middleWare int = 100
+	var middleWare = 100
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		middleWare = 0
 		next(nil)
 	})
 
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		middleWare += 1
+		middleWare++
 		next(nil)
 	})
 
