@@ -407,13 +407,13 @@ func Test_MiddleWareOrder1(t *testing.T) {
 
 func Test_MiddleWareOrder2(t *testing.T) {
 	app := New()
-	var middleWare int = 0
+	var middleWare int
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
 		next(errors.New("error"))
 	})
 	// skip this middleware
 	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		middleWare += 1
+		middleWare++
 		next(nil)
 	})
 
