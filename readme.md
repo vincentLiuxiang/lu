@@ -1,5 +1,5 @@
 # lu
-[![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu) [![Coverage Status](https://coveralls.io/repos/github/vincentLiuxiang/lu/badge.svg)](https://coveralls.io/github/vincentLiuxiang/lu)
+[![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu) [![Coverage Status](https://coveralls.io/repos/github/vincentLiuxiang/lu/badge.svg)](https://coveralls.io/github/vincentLiuxiang/lu) [![Go Report Card](https://goreportcard.com/badge/github.com/vincentLiuxiang/lu)](https://goreportcard.com/report/github.com/vincentLiuxiang/lu)
 
       ___
 	 |  /      ..    )))   
@@ -259,6 +259,7 @@ http://xxxx:xxx/test
 500
 finally handle
 ```
+
 
 ## api
 
