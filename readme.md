@@ -260,6 +260,8 @@ http://xxxx:xxx/test
 finally handle
 ```
 
+## Useful Middleware
+* [static](https://github.com/lugolang/static) lu static file serving middleware, based on fasthttp.FS.
 
 ## api
 
