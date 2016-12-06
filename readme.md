@@ -249,7 +249,7 @@ Not Found
 		ctx.SetStatusCode(200)
 		ctx.SetBody([]byte("hello world"))
 	}
-	go app.Listen(":3005")
+	app.Listen(":3005")
 ```
 lu will SetStatusCode(500) , ctx.SetBody([]byte(err.Error()))
 
