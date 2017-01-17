@@ -2,16 +2,18 @@
 [![Build Status](https://travis-ci.org/vincentLiuxiang/lu.svg?branch=master_travis)](https://travis-ci.org/vincentLiuxiang/lu) [![Coverage Status](https://coveralls.io/repos/github/vincentLiuxiang/lu/badge.svg)](https://coveralls.io/github/vincentLiuxiang/lu) [![Go Report Card](https://goreportcard.com/badge/github.com/vincentLiuxiang/lu)](https://goreportcard.com/report/github.com/vincentLiuxiang/lu)
 
       ___
-	 |  /      ..    )))   
-	 | |     .    . (((
-	 | |    .    ||~~~~||
-	 | |___ .    | \__/ |   
-	 \_____/      \____/      version: 0.0.1
-	 
+     |  /      ..    )))   
+     | |     .    . (((
+     | |    .    ||~~~~||
+     | |___ .    | \__/ |   
+     \_____/      \____/      version: 0.0.1
+
  **A high performance and Light-weighted go middleware web framework which is based on [fasthttp](https://github.com/valyala/fasthttp)**
- 
+
  The MIT License
- 
+
+If you are a [node.js](https://nodejs.org/en/) developer, you will find lu is quite similar in usage with [connect](https://github.com/senchalabs/connect) and [express](https://github.com/expressjs/express), but performance better.
+
 ## install
 
 ```
@@ -92,7 +94,7 @@ when a http request comes, lu will compare ctx.Path() with []byte(router), The c
 
 * if ctx.Path() equals to  []byte(router) , it matches.
 
-*  if ctx.Path() starts with  []byte(router), and len(ctx.Path()) > len(router) , and ctx.Path()[len(router)] is '/' or '?',  it matches.
+* if ctx.Path() starts with  []byte(router), and len(ctx.Path()) > len(router) , and ctx.Path()[len(router)] is '/' or '?',  it matches.
 
 * if the router is "/"，it means this router matches any http request
 
@@ -128,7 +130,7 @@ http request will execute each middleware one-by-one until a middleware does not
 > ```http://xxxx:xxx/api```  match "/", "/api"
 
 > ```http://xxxx:xxx/api/hello?xxx=xxx``` match "/", "/api"
-> 
+>
 
 ## error-middleware and non-error-middleware
 
