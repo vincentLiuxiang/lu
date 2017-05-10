@@ -74,18 +74,18 @@ something error occour
 ## custom your server
 
 ```go
-	app := lu.New()
-	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		ctx.SetBody([]byte("helloworld"))
-	})
-	app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		ctx.SetBody([]byte("my name is go"))
-	})
-	server := &fasthttp.Server{
-		Handler:     app.Handler,
-		Concurrency: 1024 * 1024,
-	}
-	server.ListenAndServe(":8080")
+app := lu.New()
+app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
+	ctx.SetBody([]byte("helloworld"))
+})
+app.Use("/", func(ctx *fasthttp.RequestCtx, next func(error)) {
+	ctx.SetBody([]byte("my name is go"))
+})
+server := &fasthttp.Server{
+	Handler:     app.Handler,
+	Concurrency: 1024 * 1024,
+}
+server.ListenAndServe(":8080")
 ```
 ## Use middleware
 The first parameter of ```app.Use``` we call it **router**, and the second parameter we call it **middleware**, all the middlewares will be pushed to a ```stack``` inner lu.
@@ -101,24 +101,24 @@ when a http request comes, lu will compare ctx.Path() with []byte(router), The c
 http request will execute each middleware one-by-one until a middleware does not call next() within it.
 
 ```go
-	app.Use("/hello",func(ctx *fasthttp.RequestCtx, next func(error)){
-		// ctx.Path() is starts with []byte("/hello"),
-		// if len(ctx.Path()) > len("/hello") , ctx.Path()[len("/hello")] must be '/' or '?'
-		next(nil)
-	})
-	app.Use("/world",func(ctx *fasthttp.RequestCtx, next func(error)){
-		// ctx.Path() is starts with []byte("/world"),
-		// if len(ctx.Path()) > len("/world") , ctx.Path()[len("/world")] must be '/' or '?'
-		next(nil)
-	})
+app.Use("/hello",func(ctx *fasthttp.RequestCtx, next func(error)){
+	// ctx.Path() is starts with []byte("/hello"),
+	// if len(ctx.Path()) > len("/hello") , ctx.Path()[len("/hello")] must be '/' or '?'
+	next(nil)
+})
+app.Use("/world",func(ctx *fasthttp.RequestCtx, next func(error)){
+	// ctx.Path() is starts with []byte("/world"),
+	// if len(ctx.Path()) > len("/world") , ctx.Path()[len("/world")] must be '/' or '?'
+	next(nil)
+})
 ```
 
 * for example
 
 ```
-	app.Use("/", ...)
-	app.Use("/api", ...)
-	app.Use("/test", ...)
+app.Use("/", ...)
+app.Use("/api", ...)
+app.Use("/test", ...)
 ```
 
 > ```http://xxxx:xxx/test```  match "/", "/test"
@@ -148,18 +148,18 @@ No matter in which type of middleware, when it calls next(nil), next non-error-m
 * for example
 
 ```go
-	app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
-		next(nil)
-	})
-	app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
-		next(errors.New("skip next non-error-middleware"))
-	})
-	app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
-		fmt.Println("skip this non-error-middleware")
-	})
-	app.Use("/",func(err error, ctx *fasthttp.RequestCtx, next func(error)){
-		fmt.Println(err.Error())
-	})
+app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
+	next(nil)
+})
+app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
+	next(errors.New("skip next non-error-middleware"))
+})
+app.Use("/",func(ctx *fasthttp.RequestCtx, next func(error)){
+	fmt.Println("skip this non-error-middleware")
+})
+app.Use("/",func(err error, ctx *fasthttp.RequestCtx, next func(error)){
+	fmt.Println(err.Error())
+})
 ```
 result:
 
@@ -170,12 +170,12 @@ skip next non-error-middleware
 * If an incoming http request doesn't match any router, lu will response a 404 statusCode and a "Not Found" string body.
 
 ```go
-    app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-        // no response
-    })
-    app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
-      
-    })
+app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
+// no response
+})
+app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
+
+})
 ```
 miss all of the middlewares
 
@@ -189,12 +189,12 @@ Not Found
 * If an incoming http request match some routers, but all the matched middleware don't response to the client, lu will response a 200 statusCode and a "" string body (fasthttp default mechanism)
 
 ```go
-    app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-        // no response
-    })
-    app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
-    
-    })
+app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
+// no response
+})
+app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
+
+})
 ```
 match /foo
 
@@ -208,16 +208,16 @@ http://xxxx:xxx/foo
 * In the last middleware, no matter what type of the middleware,  if you call ```next```, lu will response a 404 statusCode and a "Not Found" string body. Because, there is no middleware after the last middleware.
 
 ```go
-    app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-        // no response
-    })
-    app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
-    	ctx.SetStatusCode(200)
-    	ctx.SetBody([]byte("helloworld"))
-        next(nil) 
-        // or 
-        // next(errors.New("..."))
-    })
+app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
+		// no response
+})
+app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
+	ctx.SetStatusCode(200)
+	ctx.SetBody([]byte("helloworld"))
+		next(nil) 
+		// or 
+		// next(errors.New("..."))
+})
 ```
 lu will ResetBody() and SetStatusCode(404) , SetBody("Not Found")
 
@@ -233,25 +233,25 @@ Not Found
 * ```app. Finally```.  However, if you call ```next(nil)``` or ```next(error)``` in the last middleware. lu providers a Finally function, allow user to custom the response
 
 ```
-	app := New()
-	app.Use("/test", func(ctx *fasthttp.RequestCtx, next func(error)) {
-		next(errors.New("error"))
-	})
-	app.Use("/", func(err error, ctx *fasthttp.RequestCtx, next func(error)) {
-		ctx.SetStatusCode(302)
-		ctx.SetBody([]byte("hello world"))
-		next(errors.New("finally handle"))
-	})
-	app.Finally = func(err error, ctx *fasthttp.RequestCtx) {
-		if err != nil {
-			ctx.SetStatusCode(500)
-			ctx.SetBody([]byte(err.Error()))
-			return
-		}
-		ctx.SetStatusCode(200)
-		ctx.SetBody([]byte("hello world"))
+app := New()
+app.Use("/test", func(ctx *fasthttp.RequestCtx, next func(error)) {
+	next(errors.New("error"))
+})
+app.Use("/", func(err error, ctx *fasthttp.RequestCtx, next func(error)) {
+	ctx.SetStatusCode(302)
+	ctx.SetBody([]byte("hello world"))
+	next(errors.New("finally handle"))
+})
+app.Finally = func(err error, ctx *fasthttp.RequestCtx) {
+	if err != nil {
+		ctx.SetStatusCode(500)
+		ctx.SetBody([]byte(err.Error()))
+		return
 	}
-	app.Listen(":3005")
+	ctx.SetStatusCode(200)
+	ctx.SetBody([]byte("hello world"))
+}
+app.Listen(":3005")
 ```
 lu will SetStatusCode(500) , ctx.SetBody([]byte(err.Error()))
 
@@ -290,10 +290,5 @@ finally handle
 * app.Delete(router string, func(ctx *fasthttp.RequestCtx, next func(error))) only handle http DELETE method
 
 * app.Options(router string, func(ctx *fasthttp.RequestCtx, next func(error))) only handle http OPTIONS method
-
-
-
-
-
 
 
