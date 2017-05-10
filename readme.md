@@ -171,7 +171,7 @@ skip next non-error-middleware
 
 ```go
 app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-// no response
+	// no response
 })
 app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
 
@@ -190,7 +190,7 @@ Not Found
 
 ```go
 app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-// no response
+	// no response
 })
 app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
 
@@ -209,7 +209,7 @@ http://xxxx:xxx/foo
 
 ```go
 app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
-		// no response
+	// no response
 })
 app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
 	ctx.SetStatusCode(200)
