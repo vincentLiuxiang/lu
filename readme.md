@@ -214,9 +214,9 @@ app.Use("/foo",func(ctx *fasthttp.RequestCtx, next func(error)){
 app.Use("/bar",func(ctx *fasthttp.RequestCtx, next func(error)){
 	ctx.SetStatusCode(200)
 	ctx.SetBody([]byte("helloworld"))
-		next(nil) 
-		// or 
-		// next(errors.New("..."))
+	next(nil) 
+	// or 
+	// next(errors.New("..."))
 })
 ```
 lu will ResetBody() and SetStatusCode(404) , SetBody("Not Found")
