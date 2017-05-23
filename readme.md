@@ -26,7 +26,7 @@ go get -u github.com/vincentLiuxiang/lu
 go test -v -cover
 ```
 ref [go test](https://blog.golang.org/cover) for more about go test 
-## example
+## [example](https://github.com/lugolang/lu-example)
 
 ```go
 package main
