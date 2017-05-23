@@ -6,7 +6,7 @@ import (
 
 	"github.com/lugolang/static"
 
-	"github.com/vincentLiuxiang/lu"
+	"lu"
 )
 
 func main() {

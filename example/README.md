@@ -3,6 +3,10 @@
 `cookie and session`
 
 
+
+server.go
+
+
 ```go
 package main
 
@@ -46,5 +50,14 @@ func main() {
 
 	app.Listen(":8080")
 }
+```
+
+
+
+```
+go get -u github.com/valyala/fasthttp
+go get -u github.com/lugolang/static
+
+go run ./server.go
 ```
 
