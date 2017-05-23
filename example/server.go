@@ -1,12 +1,12 @@
 package main
 
 import (
-	"lu/example/controller"
-	"lu/example/lib"
+	"github.com/vincentLiuxiang/lu/example/controller"
+	"github.com/vincentLiuxiang/lu/example/lib"
 
 	"github.com/lugolang/static"
 
-	"lu"
+	"github.com/vincentLiuxiang/lu"
 )
 
 func main() {
