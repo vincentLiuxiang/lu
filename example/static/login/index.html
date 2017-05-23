@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    span {
+      display: inline-block;
+      width: 70px;
+      line-height: 28px;
+    }
+    div {
+      width: 500px;
+      line-height: 28px;
+      margin-bottom: 10px;
+    }
+    input {
+      display: inline-block;
+      line-height: 28px;
+    }
+    input[type="button"] {
+      width: 80px;
+      height: 30px;
+      border: none;
+      line-height: 30px;
+    }
+  </style>
+  <script>
+    function login() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      fetch('/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          hello: 'world'
+        })
+      })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        if (!data.success) {
+          return alert(data.noteMsg);
+        }
+        window.location.href = data.redirect;
+      })
+      .catch(e => alert(e.message))
+    }
+  </script>
+</head>
+<body>
+  <div><span>用户名：</span><input type="text" value="lu" id="username"/></div>
+  <div><span>密码：</span><input type="password" value="fasthttp" id="password"/></div>
+  <div><input type="button" value="登录" onclick="login()"/></div>
+</body>
+</html>
